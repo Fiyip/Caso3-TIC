@@ -14,23 +14,31 @@ public class BuzonEntrada {
     
     // Productor (Usuario)
     public synchronized void depositar(Solicitud solicitud) throws InterruptedException {
-        // TODO: Espera pasiva si la cola está llena (wait)
-        // TODO: Agregar solicitud y notificar a gestores (notifyAll)
+        while (cola.size() == capacidad) {
+            wait();
+        }
+        cola.add(solicitud);
+        notifyAll();
     }
 
     // Consumidor (Gestor)
-    public synchronized Solicitud extraer() {
-        // TODO: Retorno no bloqueante o extracción si hay elementos
-        return null;
+    public synchronized Solicitud extraer(){
+        Solicitud solicitud = cola.poll();
+        if (solicitud != null) {
+            notifyAll(); 
+        }
+        return solicitud;
     }
 
-    public synchronized void reportarTerminacion() {
-        // TODO: Decrementar usuariosActivos y notificar
+    public synchronized void reportarTerminacion() {    
+        usuariosActivos--; 
+        notifyAll();
+        
     }
 
-    public synchronized boolean hayTrabajoPendiente() {
-        // TODO: Retorna true si hay solicitudes en cola o si aún quedan usuarios activos
-        return false;
+    public synchronized boolean hayTrabajoPendiente()  {
+        return !cola.isEmpty() || usuariosActivos > 0;
+        
     }
 
     public synchronized int getTamanoCola() {
