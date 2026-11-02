@@ -1,0 +1,114 @@
+<mxfile host="65bd71144e">
+    <diagram id="uml_workshop_v4" name="Arquitectura Detallada Sistema Gestor MV">
+        <mxGraphModel dx="626" dy="393" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="Main" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=left;" value="Main&#xa;────────────────────────&#xa;- nu: int&#xa;- base: int&#xa;- ng: int&#xa;- tam1: int&#xa;- tam2: int&#xa;- procesadores: int&#xa;- memoria: int&#xa;- pagina: int&#xa;- almacenamiento: int&#xa;- bloque: int&#xa;────────────────────────&#xa;+ main(args: String[]): void&#xa;+ cargarConfig(): void&#xa;+ init(): void" vertex="1">
+                    <mxGeometry height="240" width="220" x="40" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="Solicitud" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=left;" value="Solicitud&#xa;────────────────────────&#xa;- idSolicitud: String&#xa;- procesadoresRequeridos: int&#xa;- memoriaGiB: int&#xa;- almacenamientoGiB: int&#xa;────────────────────────&#xa;+ getIdSolicitud(): String&#xa;+ getProcesadoresRequeridos(): int&#xa;+ getMemoriaGiB(): int&#xa;+ getAlmacenamientoGiB(): int" vertex="1">
+                    <mxGeometry height="190" width="220" x="327" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="Usuario" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=left;" value="«Thread»&#xa;Usuario&#xa;────────────────────────&#xa;- idUsuario: int&#xa;- totalSolicitudes: int&#xa;- buzon: BuzonEntrada&#xa;────────────────────────&#xa;+ run(): void&#xa;- generarSolicitud(secuencial: int): Solicitud" vertex="1">
+                    <mxGeometry height="160" width="220" y="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="Buzon" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;align=left;" value="«Monitor»&#xa;BuzonEntrada&#xa;────────────────────────&#xa;- capacidad: int&#xa;- usuariosActivos: int&#xa;- cola: Queue[Solicitud]&#xa;────────────────────────&#xa;+ depositar(solicitud: Solicitud): void&#xa;+ extraer(): Solicitud&#xa;+ reportarTerminacion(): void&#xa;+ hayTrabajoPendiente(): boolean" vertex="1">
+                    <mxGeometry height="170" width="220" x="330" y="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="Gestor" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=left;" value="«Thread»&#xa;GestorSolicitudes&#xa;────────────────────────&#xa;- idGestor: int&#xa;- buzon: BuzonEntrada&#xa;- zonaEspera: ZonaEspera&#xa;- ctrlProc: ControladorProcesadores&#xa;- ctrlMem: ControladorMemoria&#xa;- ctrlAlm: ControladorAlmacenamiento&#xa;────────────────────────&#xa;+ run(): void" vertex="1">
+                    <mxGeometry height="170" width="230" x="680" y="325" as="geometry"/>
+                </mxCell>
+                <mxCell id="ZonaEspera" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;align=left;" value="«Monitor»&#xa;ZonaEspera&#xa;────────────────────────&#xa;- umbral: int&#xa;- pendientes: int&#xa;- bloqueado: boolean&#xa;────────────────────────&#xa;+ verificarUmbral(): void&#xa;+ entrarEspera(): void&#xa;+ registrarSalidaExito(): void&#xa;+ despertarTodas(): void" vertex="1">
+                    <mxGeometry height="170" width="230" x="680" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="MV" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=left;" value="«Thread»&#xa;MaquinaVirtual&#xa;────────────────────────&#xa;- solicitud: Solicitud&#xa;- zonaEspera: ZonaEspera&#xa;- ctrlProc: ControladorProcesadores&#xa;- ctrlMem: ControladorMemoria&#xa;- ctrlAlm: ControladorAlmacenamiento&#xa;- tiempoEjecucionMs: long&#xa;────────────────────────&#xa;+ run(): void&#xa;- intentarAsignacionCompleta(): boolean&#xa;- ejecutarSimulacion(): void&#xa;- liberarTodosRecursos(): void" vertex="1">
+                    <mxGeometry height="220" width="240" x="680" y="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="CtrlProc" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;align=left;" value="«Monitor»&#xa;ControladorProcesadores&#xa;────────────────────────&#xa;- totalProcesadores: int&#xa;- procesadoresDisponibles: int&#xa;- asignaciones: Map[Integer, String]&#xa;────────────────────────&#xa;+ asignar(idVM: String, cant: int): boolean&#xa;+ liberar(idVM: String): void" vertex="1">
+                    <mxGeometry height="150" width="240" x="1110" y="410" as="geometry"/>
+                </mxCell>
+                <mxCell id="CtrlMem" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;align=left;" value="«Monitor»&#xa;ControladorMemoria&#xa;────────────────────────&#xa;- totalPaginas: int&#xa;- tamPaginaKiB: int&#xa;- paginasDisponibles: int&#xa;- asignaciones: Map[Integer, String]&#xa;────────────────────────&#xa;+ asignar(idVM: String, gib: int): boolean&#xa;+ liberar(idVM: String): void&#xa;- traducirGiBAPaginas(gib: int): int" vertex="1">
+                    <mxGeometry height="170" width="240" x="1110" y="590" as="geometry"/>
+                </mxCell>
+                <mxCell id="CtrlAlm" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;align=left;" value="«Monitor»&#xa;ControladorAlmacenamiento&#xa;────────────────────────&#xa;- totalBloques: int&#xa;- tamBloqueKiB: int&#xa;- bloquesDisponibles: int&#xa;- asignaciones: Map[Integer, String]&#xa;────────────────────────&#xa;+ asignar(idVM: String, gib: int): boolean&#xa;+ liberar(idVM: String): void&#xa;- traducirGiBABloques(gib: int): int" vertex="1">
+                    <mxGeometry height="170" width="240" x="1100" y="790" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelMainUser" edge="1" parent="1" source="Main" style="dashed=1;endArrow=open;endSize=10;" target="Usuario" value="instancia&#xa;">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelMainBuzon" edge="1" parent="1" source="Main" style="dashed=1;endArrow=open;endSize=10;" target="Buzon" value="instancia">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelMainGestor" edge="1" parent="1" source="Main" style="dashed=1;endArrow=open;endSize=10;" target="Gestor" value="instancia">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="320" y="290"/>
+                            <mxPoint x="650" y="310"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="RelMainZona" edge="1" parent="1" source="Main" style="dashed=1;endArrow=open;endSize=10;" target="ZonaEspera" value="instancia">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="340" y="20"/>
+                            <mxPoint x="640" y="20"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="RelUserSol" edge="1" parent="1" source="Usuario" style="endArrow=open;endSize=10;" target="Solicitud" value="Crea">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelUserBuzon" edge="1" parent="1" source="Usuario" style="endArrow=block;endFill=1;" target="Buzon" value="Deposita en">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelBuzonSol" edge="1" parent="1" source="Buzon" style="endArrow=diamondThin;startArrow=none;endFill=0;" target="Solicitud" value="0..*">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelGestorBuzon" edge="1" parent="1" source="Gestor" style="endArrow=block;endFill=1;" target="Buzon" value="Consume">
+                    <mxGeometry relative="1" x="-0.5343" y="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="RelGestorSol" edge="1" parent="1" source="Gestor" style="dashed=1;endArrow=open;endSize=10;" target="Solicitud" value="Extrae">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="630" y="240"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="RelGestorZona" edge="1" parent="1" source="Gestor" style="endArrow=open;endSize=10;" target="ZonaEspera" value="Verifica umbral / Espera">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelGestorMV" edge="1" parent="1" source="Gestor" style="endArrow=open;endSize=10;" target="MV" value="Crea e inicia">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelMVSol" edge="1" parent="1" source="MV" style="endArrow=diamondThin;startArrow=none;endFill=1;" target="Solicitud" value="Contiene 1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="600" y="620"/>
+                            <mxPoint x="610" y="190"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="RelMVZona" edge="1" parent="1" source="MV" style="endArrow=open;endSize=10;" target="ZonaEspera" value="Espera pasiva / Notifica">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="990" y="540"/>
+                            <mxPoint x="990" y="170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="RelMVProc" edge="1" parent="1" source="MV" style="endArrow=open;endSize=10;" target="CtrlProc" value="1. Reserva / Libera">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelMVMem" edge="1" parent="1" source="MV" style="endArrow=open;endSize=10;" target="CtrlMem" value="2. Reserva / Libera">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RelMVAlm" edge="1" parent="1" source="MV" style="endArrow=open;endSize=10;" target="CtrlAlm" value="3. Reserva / Libera">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
