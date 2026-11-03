@@ -9,6 +9,7 @@ public class GestorSolicitudes extends Thread {
     public GestorSolicitudes(int idGestor, BuzonEntrada buzon, ZonaEspera zonaEspera,
                              ControladorProcesadores ctrlProc, ControladorMemoria ctrlMem,
                              ControladorAlmacenamiento ctrlAlm) {
+        super("Gestor-" + idGestor);
         this.idGestor = idGestor;
         this.buzon = buzon;
         this.zonaEspera = zonaEspera;
@@ -19,10 +20,29 @@ public class GestorSolicitudes extends Thread {
 
     @Override
     public void run() {
-        // TODO: Bucle principal mientras buzon.hayTrabajoPendiente()
-        // TODO: 1. zonaEspera.verificarUmbral()
-        // TODO: 2. Intentar extraer del buzón
-        //       - Si no hay elementos -> Thread.yield() (Espera semi-activa)
-        //       - Si hay solicitud -> Crear e iniciar instancia de MaquinaVirtual
+        try{
+            while (buzon.hayTrabajoPendiente()) {
+                //Verificamos Umbral y si hay pendientes >= umbral, zonaEspera
+                //ejecuta la espera pasiva total hasta pendientes == 0 nuevamente
+                zonaEspera.verificarUmbral();
+                
+                Solicitud solicitud = buzon.extraer();
+                if (solicitud != null){
+                    //Creamos e iniciamos el hilo de la VM
+                    MaquinaVirtual vm = new MaquinaVirtual(solicitud,zonaEspera,ctrlProc,ctrlMem,ctrlAlm);
+                    vm.start();
+                }
+                else{
+                    //Espera semiactiva si el buzón está vacío pero aún hay usuarios activos
+                    Thread.yield();
+                }
+            }
+        }
+        catch(InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
+    }
+    public int getIdGestor() {
+        return idGestor;
     }
 }

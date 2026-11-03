@@ -10,13 +10,13 @@ public class MaquinaVirtual extends Thread {
 
     public MaquinaVirtual(Solicitud solicitud, ZonaEspera zonaEspera,
                           ControladorProcesadores ctrlProc, ControladorMemoria ctrlMem,
-                          ControladorAlmacenamiento ctrlAlm, Random random) {
+                          ControladorAlmacenamiento ctrlAlm) {
         this.solicitud = solicitud;
         this.zonaEspera = zonaEspera;
         this.ctrlProc = ctrlProc;
         this.ctrlMem = ctrlMem;
         this.ctrlAlm = ctrlAlm;
-        this.random = random;
+        this.random = new Random();
     }
 
     @Override
