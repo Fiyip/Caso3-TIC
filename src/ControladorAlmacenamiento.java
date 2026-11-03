@@ -51,8 +51,8 @@ public class ControladorAlmacenamiento {
     }
 
     public int traducirGiBABloques(int almacenamientoGiB) {
-        long totalKiB = (long) almacenamientoGiB * 1024 * 1024;
-        return (int) Math.round((double) totalKiB / tamBloqueKiB);
+        long totalKiB = (long) almacenamientoGiB*1024*1024;
+        return (int) Math.round((double) totalKiB/tamBloqueKiB);
     }
 
     public synchronized int getBloquesDisponibles() {
