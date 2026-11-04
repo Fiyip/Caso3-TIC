@@ -1,0 +1,10 @@
+nu = 3
+base = 3
+ng = 2
+tam1 = 3
+tam2 = 2
+procesadores = 16
+memoria = 64
+pagina = 1024
+almacenamiento = 512
+bloque = 1024

@@ -26,17 +26,14 @@ public class ZonaEspera {
             wait();
         }
     }
-
     // Invocado por MV si falla la reserva
-    public synchronized void entrarEspera() throws InterruptedException {
+    public synchronized void entrarEspera() {
         hilosPendientes.add(Thread.currentThread());
         pendientes = hilosPendientes.size();
         // el threat entrante alcanza el umbral, activa el bloqueo temporal
         if (pendientes >= umbral) {
             bloqueado = true;
         }
-
-        wait();
     }
 
     // Invocado por MV al despertar y conseguir todos los recursos

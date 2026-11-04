@@ -25,20 +25,21 @@ public class MaquinaVirtual extends Thread {
         boolean entroEspera = false;
 
         try{
-            while(!asignoRecursos){
-                if (!intentarAsignacionCompleta()){
-                    asignoRecursos = true;
-                }
-                //Si no asigna los recursos mandar a ZonaEspera
-                else{
-                    entroEspera = true;
-                    zonaEspera.entrarEspera();
-                }
+            synchronized (zonaEspera) {
+                        
+                    
+            while (!intentarAsignacionCompleta()) {
+                entroEspera = true;
+                zonaEspera.entrarEspera();
+                zonaEspera.wait();
             }
+            asignoRecursos = true;
             //Si esperó descuenta del contador
             if (entroEspera) {
                 zonaEspera.registrarSalidaExito();
             }
+        }
+        
             //Simula chamba
             simularEjecutar();
         }
@@ -80,7 +81,7 @@ public class MaquinaVirtual extends Thread {
 
     private void simularEjecutar() throws InterruptedException {
         //Simulamos tiempo de chamba random entre 4.000 ms y 40.000 ms
-        long tiempoMs = 4000L + (long) (random.nextDouble() * (40000L - 4000L));
+        long tiempoMs = 40L + (long) (random.nextDouble() * (400L - 40L));
         Thread.sleep(tiempoMs);
     }
 
